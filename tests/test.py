@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from vit_pytorch import ViT
 
@@ -7,7 +8,7 @@ def test():
         patch_size = 32,
         num_classes = 1000,
         dim = 1024,
-        depth = 6,
+        depth = 6, # ie. #layers of encoder block
         heads = 16,
         mlp_dim = 2048,
         dropout = 0.1,
@@ -17,4 +18,11 @@ def test():
     img = torch.randn(1, 3, 256, 256)
 
     preds = v(img)
+    # added Lam
+    preds = torch.softmax(preds.detach(),dim=1)
+    print('preds', np.argmax(preds),  preds.max(), preds[0,0:10])
+
     assert preds.shape == (1, 1000), 'correct logits outputted'
+
+if __name__ == '__main__':
+    test()
